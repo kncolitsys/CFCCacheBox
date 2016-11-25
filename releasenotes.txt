@@ -1,0 +1,75 @@
+==============
+-- CacheBox --
+==============
+
+Version 1.1.0 RC2 
+- The "Optimize Now" link added in the Management Application's Options tab 
+	in the previous version has been expanded to provide a page of selectable 
+	recommendations instead of blindly applying any recommendations returned 
+	by the config object 
+- Evict Policy recommendations are now provided by a separate intelligence.cfc
+	which you can customize by placing in the /settings directory (or better yet 
+	by placing an intelligence.cfc in the settings directory that extends it). 
+	-- If you want more or better recommendations for your cache agents, it may not 
+		be necessary to customize the intelligence.cfc as you can do this by adding 
+		custom brain objects in the /settings/intelligence directory that extend the 
+		abstract.cfc found in that directory 
+- Logging and Email alerts are not enabled by default. 
+	-- You can enable email alerts by copying the email.cfc to the /settings 
+		directory and editing the CFMAIL tag as needed. 
+	-- Logging can be enabled by copying log.cfc to the same directory and 
+		modifying it as needed, or by placing a log.cfc that extends "cachebox.log" 
+		in that directory. 
+
+Version 1.0.0 RC1 
+
+- Added two optimization features in the Management Application 
+	-- Options Tab - an "Optimize Now" link at the top sets the eviction policies of 
+		all auto, fresh and perf agents based on current recommendations 
+		-- agent settings are not permanent and will revert to default if the server is restarted 
+	-- Agent Detail page includes a current recommendation if available 
+		-- the button sets the form fields, but does not submit the form 
+- Added Log Out link at top right of page next to "Help" 
+- General style changes in Management Application - tabs are now fixed at top of page 
+- testservice.cfc is experimental - USE AT YOUR OWN RISK 
+	-- the testservice.cfc is engaged automatically if you have "cbxtestsite" 
+		anywhere in your URL when loading the Management Application 
+	-- Currently there is a bug that causes it to replace the live service 
+		if the test service is instantiated before the default service 
+		- you should never see this bug if you don't deliberately load the test service 
+
+Version 0.9.6 BETA 
+
+- Added password and login form to Management Application 
+	-- note that you need to set the password when you install the framework 
+- More Samples 
+	-- Added SimpleBlog ColdBox sample 
+	-- Modified SimpleBlog to be a stand-alone example of CacheBox in a non-framework application 
+		-- this is important because it shows application portability with the CacheBoxAgent.cfc 
+		-- the stand-alone SimpleBlog can be installed anywhere, it does NOT _require_ a CacheBox installation 
+- Added Cluster tab 
+	-- trust isn't propagating to all servers quite the way I hoped, 
+		so you need to manually check to make sure all your servers 
+		have all the other servers in their list 
+		- example 
+		- servers are a, b and c 
+		- server a - lists b, c 
+		- server b - lists a, c 
+		- server c - lists a, b 
+- Added config settings for memory failure warnings 
+	-- these set the time to failure before optimization and time to failure 
+		before the displayed warning in the management application 
+	-- defaults to 1 hour and 2 hours respectively 
+	-- it might be nice to have the server send an SMS message 
+		when it reaches the warning level, but hasn't been implemented 
+- Simplified the eviction policies 
+	-- this was the result of also adding an expire() method to the agent 
+		to allow content to be flagged as expired without immediately removing it 
+		-- flagged content is not returned from fetch operations, but uses resources until the next reap 
+		-- using expire() instead of delete() may result in faster page loads for users 
+	-- this should make it much easier to write custom eviction policies 
+- Optimization method in defaultconfig.cfc is incomplete 
+	-- I'm sort of guessing at this point about how best to optimize the cache 
+	-- The data is there, but I want better algorithms for applying it 
+- Not tested on Railo, so no knowing if the Cluster storage type works 
+- Considering support for MS Velocity? 
